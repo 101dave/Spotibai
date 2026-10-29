@@ -19,18 +19,11 @@
  *   audio   — plain MP3/WAV via HTMLAudioElement. Timeline is the audio clock.
  *   video   — a direct video file (mp4/webm, e.g. from the `videos` bucket).
  *             The <video> element becomes the authoritative clock AND audio.
- *   hybrid  — a TikTok post (@spotibai_ph). TikTok's player is a cross-origin
- *             iframe with no postMessage API, so it cannot be seeked or
- *             synchronised programmatically. We therefore:
- *               • mount the real embed for visuals + native playback,
- *               • simultaneously play the track's audio bed so the app has a
- *                 reliable, seekable clock and sound even when the embed is
- *                 blocked (offline, region, third-party storage restrictions),
- *               • auto-pause our bed if the listener interacts with the embed,
- *                 so audio never doubles up.
- *
- * That hybrid rule is the entire reason the schema keeps BOTH `audio_url` and
- * `video_url` on TikTok-sourced rows instead of making video exclusive.
+ *   hybrid  — a TikTok post (@spotibai_ph). The official TikTok player is a
+ *             cross-origin iframe and cannot be controlled programmatically.
+ *             It stays embedded in the app and is loaded only after an explicit
+ *             user action. We do not play a generated audio substitute, so the
+ *             sound matches the original post.
  */
 
 import {
@@ -196,9 +189,9 @@ export class MediaEngine {
       } else if (this.audio.src) {
         await this.audio.play();
       } else if (this.mode === 'hybrid') {
-        // Video-only TikTok row: nothing local to play; the embed is the show.
+        // Never substitute a demo audio bed for a TikTok post's original sound.
+        // The listener loads and controls the official embed in the in-app panel.
         this.hooks.onPlayState?.(false);
-        this.hooks.onVideoStatus?.('manual');
         return;
       }
       this.hooks.onPlayState?.(true);
@@ -356,8 +349,8 @@ export class MediaEngine {
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
     iframe.loading = 'lazy';
 
-    // Cross-origin iframes swallow clicks, so treat any pointer-down on the
-    // stage as "user is driving the TikTok player" → stop our audio bed.
+    // Cross-origin iframes swallow clicks; record that the listener is
+    // controlling the official TikTok player rather than local audio.
     const onInteract = () => {
       if (this.mode !== 'hybrid') return;
       this.audio.pause();
@@ -494,8 +487,8 @@ export class PlaybackController {
       track,
       isLoading: true,
       error: null,
-      // Keep playback in SpotiBai; opening the TikTok panel is an explicit user action.
-      videoOpen: track.is_tiktok_source ? false : pb.videoOpen,
+      // Keep listeners in SpotiBai; show TikTok's player inline, never navigate away.
+      videoOpen: track.is_tiktok_source ? true : pb.videoOpen,
       videoStatus: track.is_tiktok_source ? 'loading' : 'idle',
     });
 

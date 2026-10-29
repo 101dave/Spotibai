@@ -411,9 +411,11 @@ function syncPlaybackUI(state) {
   dom.scrub.setAttribute('aria-valuenow', String(Math.round(pct * 100)));
   dom.scrub.setAttribute('aria-valuetext', `${fmtTime(pb.progress)} of ${fmtTime(duration)}`);
   dom.scrub.title =
-    pb.mode === 'hybrid'
+    pb.mode === 'hybrid' && track?.audio_url
       ? 'Timeline follows the audio bed — the TikTok embed itself cannot be seeked'
-      : 'Seek';
+      : pb.mode === 'hybrid'
+        ? 'The official TikTok player controls its own timeline'
+        : 'Seek';
 
   /* ---------------- volume -------------------------------------------- */
   const vol = pb.muted ? 0 : pb.volume;
@@ -550,15 +552,15 @@ function syncVideoPanel(state) {
     const link = $('#videoFallbackLink');
 
     if (status === 'gate') {
-      copy.innerHTML = `TikTok drops play in the panel above.<br />Load the player, or pop it open on TikTok.`;
+      copy.innerHTML = `Load the official TikTok player here to hear the original sound.<br />You’ll stay in SpotiBai.`;
       loadBtn.hidden = false;
       link.className = 'btn btn--sm btn--ghost';
     } else if (status === 'blocked') {
-      copy.innerHTML = `The embedded TikTok player can’t load here (offline or blocked embed).<br />Playback continues from the track’s audio bed.`;
+      copy.innerHTML = `The official TikTok player can’t load here right now.<br />No substitute audio will be played.`;
       loadBtn.hidden = true;
       link.className = 'btn btn--sm';
     } else {
-      copy.innerHTML = `Still loading the TikTok embed…<br />Audio is already playing from the track’s bed.`;
+      copy.innerHTML = `Still loading the official TikTok player…<br />It will play the original sound when ready.`;
       loadBtn.hidden = true;
       link.className = 'btn btn--sm';
     }

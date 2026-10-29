@@ -159,7 +159,8 @@ export const tracks = [
     artist_id: 'a0000000-0000-4000-8000-000000000004',
     duration_seconds: 37,
     track_number: 1,
-    audio_url: './assets/audio/malupit-na-bai.mp3',
+    // Use the official embedded post audio; the generated demo bed is not this song.
+    audio_url: null,
     video_url: 'https://www.tiktok.com/@spotibai_ph/video/7681226050852031751',
     is_tiktok_source: true,
     tiktok_video_id: '7681226050852031751',
@@ -182,7 +183,8 @@ export const tracks = [
     artist_id: 'a0000000-0000-4000-8000-000000000004',
     duration_seconds: 41,
     track_number: 2,
-    audio_url: './assets/audio/coron-song.mp3',
+    // Use the official embedded post audio; the generated demo bed is not this song.
+    audio_url: null,
     video_url: 'https://www.tiktok.com/@spotibai_ph/video/7678258030735265042',
     is_tiktok_source: true,
     tiktok_video_id: '7678258030735265042',

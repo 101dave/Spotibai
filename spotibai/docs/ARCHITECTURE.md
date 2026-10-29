@@ -104,34 +104,24 @@ Design decisions worth calling out:
 |---|---|---|---|---|
 | `audio_url` only | `audio` | `<audio>` | `<audio>` | audio player |
 | `video_url` = `.mp4/.webm` | `video` | `<video>` | `<video>` | video mounted in panel |
-| `is_tiktok_source` | `hybrid` | `<audio>` bed | `<audio>` bed | TikTok embed + poster |
+| `is_tiktok_source` | `hybrid` | TikTok iframe | official TikTok player | inline TikTok player + poster |
 
-### 4.2 Why TikTok is "hybrid" and not "video"
+### 4.2 Original TikTok audio
 
 TikTok's player is delivered as a **cross-origin iframe with no postMessage
-API**. From the parent page you cannot read `currentTime`, you cannot seek, and
-you cannot observe play/pause. Any app that makes the embed its *only* media
-source therefore loses:
+API**. The parent page cannot seek it or observe its playback state. Earlier
+demo rows paired the embed with a generated MP3 bed, but that audio did not
+match the original post. TikTok rows now use the official embedded player as
+the source of truth and have `audio_url = NULL` unless a rights-cleared,
+matching audio master is supplied.
 
-* a scrubbable timeline,
-* accurate progress/duration,
-* `ENDED`-driven auto-advance,
-* playback when the embed is blocked (offline, region, cookie restrictions,
-  rate limiting).
+Consequences:
 
-So for `is_tiktok_source` tracks we mount the embed **for visuals** and
-simultaneously play the track's own `audio_url` bed, which provides the real
-clock. Consequences baked into the UI:
-
-* the scrubber keeps working (it seeks the bed),
-* the timeline tooltip explains the coupling,
-* a `pointerdown` on the embed stage pauses the bed, so a listener driving the
-  TikTok player never gets double audio (`videoStatus = 'manual'`),
-* if the embed never loads, we show the poster + fallback card instead of a
-  white error frame, and audio keeps playing.
-
-This is exactly why `schema.sql` keeps **both** `audio_url` and `video_url` on
-TikTok rows instead of making video exclusive.
+* The listener loads and controls the official player inside SpotiBai; the app
+does not navigate away automatically.
+* The app cannot provide seek/progress controls for the cross-origin player.
+* If the embed is blocked, the poster and fallback message remain visible; the
+  app does not play an unrelated substitute track.
 
 ### 4.3 Embed loading policy
 
@@ -250,8 +240,9 @@ tiktok_caption    = raw caption
 tiktok_hashtags   = ['SpotiBaiPH','Tangalog','OfficialSpotiBaiPH','bainabai🔥','SpotiBai']
 tiktok_like_count / comment / share / posted_at = engagement snapshot
 thumbnail_url     = uploaded poster frame (covers bucket)
-audio_url         = the licensed audio bed (optional but strongly recommended,
-                    because it powers the hybrid clock — see §4.2)
+audio_url         = NULL for TikTok-sourced tracks unless a licensed,
+                    sound-matched master is available; original sound comes
+                    from the official embedded player (see §4.2).
 ```
 
 Two production guards already in the schema:
