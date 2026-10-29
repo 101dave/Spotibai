@@ -51,7 +51,23 @@ export function loadSupabaseClient() {
    Helpers
    ============================================================================ */
 
-/** Normalise a `track_details` row (and resolve storage paths to public URLs). */
+/** Keep seeded asset paths relative to the nested app folder, not the site root. */
+function localAssetUrl(bucket, path) {
+  if (!path) return null;
+  const raw = String(path).trim();
+  if (/^(https?:|data:)/i.test(raw)) return raw;
+  const match = raw.match(/(?:^|\/)assets\/(audio|covers|videos)\/(.+)$/i);
+  if (match && match[1].toLowerCase() === bucket) {
+    return `./assets/${bucket}/${match[2]}`;
+  }
+  return raw;
+}
+
+function mapArtist(artist) {
+  return artist ? { ...artist, image_url: localAssetUrl('covers', artist.image_url) } : artist;
+}
+
+/** Normalise a `track_details` row and keep bundled artwork app-relative. */
 function mapTrack(row) {
   if (!row) return null;
   return {
@@ -63,10 +79,11 @@ function mapTrack(row) {
       return match ? `./assets/audio/${match[1]}` : null;
     })(),
     video_url: row.video_url,
-    cover_url: publicStorageUrl(
-      CONFIG.BUCKETS.covers,
+    cover_url: localAssetUrl(
+      'covers',
       row.cover_url || row.album_cover_url || row.thumbnail_url || null,
     ),
+    artist_image_url: localAssetUrl('covers', row.artist_image_url),
     tiktok_video_id: row.tiktok_video_id || parseTikTokId(row.video_url),
     tiktok_hashtags: row.tiktok_hashtags || [],
     is_tiktok_source: Boolean(row.is_tiktok_source),
@@ -166,9 +183,10 @@ export class SupabaseRepository {
     if (error) fail('listAlbums', error);
     return (data || []).map((a) => ({
       ...a,
-      cover_url: publicStorageUrl(CONFIG.BUCKETS.covers, a.cover_url),
+      cover_url: localAssetUrl('covers', a.cover_url),
+      artists: mapArtist(a.artists),
       artist_name: a.artists?.name ?? 'Unknown artist',
-      artist_image_url: a.artists?.image_url ?? null,
+      artist_image_url: localAssetUrl('covers', a.artists?.image_url),
     }));
   }
 
@@ -191,10 +209,11 @@ export class SupabaseRepository {
     return {
       album: {
         ...albumRes.data,
-        cover_url: publicStorageUrl(CONFIG.BUCKETS.covers, albumRes.data.cover_url),
+        cover_url: localAssetUrl('covers', albumRes.data.cover_url),
+        artists: mapArtist(albumRes.data.artists),
         artist_name: albumRes.data.artists?.name,
       },
-      artist: albumRes.data.artists,
+      artist: mapArtist(albumRes.data.artists),
       tracks: (tracksRes.data || []).map(mapTrack),
     };
   }
@@ -205,7 +224,7 @@ export class SupabaseRepository {
       .select('id, name, bio, image_url')
       .order('name');
     if (error) fail('listArtists', error);
-    return data || [];
+    return (data || []).map(mapArtist);
   }
 
   async getArtist(id) {
@@ -222,10 +241,10 @@ export class SupabaseRepository {
     if (!artistRes.data) return null;
     const tracks = (tracksRes.data || []).map(mapTrack);
     return {
-      artist: artistRes.data,
+      artist: mapArtist(artistRes.data),
       albums: (albumsRes.data || []).map((album) => ({
         ...album,
-        cover_url: publicStorageUrl(CONFIG.BUCKETS.covers, album.cover_url),
+        cover_url: localAssetUrl('covers', album.cover_url),
       })),
       topTracks: tracks.slice(0, 5),
       tracks,
@@ -314,10 +333,11 @@ export class SupabaseRepository {
       tracks: (tracksRes.data || []).map(mapTrack),
       albums: (albumsRes.data || []).map((a) => ({
         ...a,
-        cover_url: publicStorageUrl(CONFIG.BUCKETS.covers, a.cover_url),
+        cover_url: localAssetUrl('covers', a.cover_url),
+        artists: mapArtist(a.artists),
         artist_name: a.artists?.name,
       })),
-      artists: artistsRes.data || [],
+      artists: (artistsRes.data || []).map(mapArtist),
     };
   }
 
