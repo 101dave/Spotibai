@@ -21,20 +21,19 @@ It boots instantly in **demo mode**: a full catalog (4 artists, 4 albums, 8 trac
 2 playlists), real generated MP3s, generated cover art, working auth, likes,
 playlist CRUD and playback — all offline, persisted to `localStorage`.
 
-### Connect real Supabase
+### Supabase project
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. Paste `sql/schema.sql` into the SQL editor → **Run**.
-3. *(optional)* Paste `sql/seed.sql` → **Run** for the demo catalog with the real
-   TikTok video ids.
-4. Upload `assets/audio/*.mp3` to the `audio` bucket and `assets/covers/*.svg` to
-   `covers` (or point the seed's URLs at your own CDN).
-5. In the app: **sidebar → ⚙ / "Demo data" badge → paste Project URL + anon key → Save & reload**.
-   Credentials are stored in `localStorage` only. You can also hard-code them in
-   `js/config.js` or inject `window.__SPOTIBAI_CONFIG__`.
+This checkout is configured to connect to the SpotiBai Supabase project by default.
+Its schema and demo catalog are installed there. The browser uses only the public
+anon key; RLS policies protect user data. You can override the project credentials
+through the in-app connection settings or with `window.__SPOTIBAI_CONFIG__`.
 
-If Supabase is unreachable or the key is wrong, the app **degrades back to demo**
-with a warning badge instead of showing an empty, broken UI.
+To serve audio and artwork from Supabase, upload `assets/audio/*` to the `audio`
+bucket and `assets/covers/*` to `covers`. Until those assets are uploaded, media
+URLs stored in the demo catalog may not resolve from the hosted app.
+
+If Supabase is unreachable or credentials are invalid, the app degrades back to
+demo mode with a warning badge.
 
 ---
 

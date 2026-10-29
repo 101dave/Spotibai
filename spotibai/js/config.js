@@ -15,8 +15,10 @@
 const STORAGE_KEY = 'spotibai:config';
 
 const DEFAULTS = {
-  SUPABASE_URL: '',
-  SUPABASE_ANON_KEY: '',
+  // Public project endpoint/key for the connected SpotiBai Supabase project.
+  // The anon key is safe to expose in browser code; row-level security protects data.
+  SUPABASE_URL: 'https://ptqxzebijbnrlzjafwms.supabase.co',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0cXh6ZWJpamJucmx6amFmd21zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyMTMzMDUsImV4cCI6MjEwODc4OTMwNX0.bD7r7Mj5JxrMn65_7IU7Z_QXOB8ndVx8-ziDd_CttHM',
 
   /** ESM entry point for supabase-js. Swap for a self-hosted bundle if needed. */
   SUPABASE_MODULE: 'https://esm.sh/@supabase/supabase-js@2.45.4?bundle',
