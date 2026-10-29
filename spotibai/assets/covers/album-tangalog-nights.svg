@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="Tangalog Nights">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1030"/>
+      <stop offset="100%" stop-color="#0a1a12"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#1DB954" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#1DB954" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.055"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <rect width="640" height="640" fill="url(#glow)"/>
+  <rect x="40" y="419" width="9" height="161" rx="4.5" fill="#1DB954" opacity="0.18"/><rect x="61" y="262" width="9" height="318" rx="4.5" fill="#1DB954" opacity="0.29"/><rect x="82" y="474" width="9" height="106" rx="4.5" fill="#1DB954" opacity="0.40"/><rect x="103" y="351" width="9" height="229" rx="4.5" fill="#1DB954" opacity="0.51"/><rect x="124" y="298" width="9" height="282" rx="4.5" fill="#1DB954" opacity="0.62"/><rect x="145" y="507" width="9" height="73" rx="4.5" fill="#1DB954" opacity="0.18"/><rect x="166" y="534" width="9" height="46" rx="4.5" fill="#1DB954" opacity="0.29"/><rect x="187" y="300" width="9" height="280" rx="4.5" fill="#1DB954" opacity="0.40"/><rect x="208" y="408" width="9" height="172" rx="4.5" fill="#1DB954" opacity="0.51"/><rect x="229" y="258" width="9" height="322" rx="4.5" fill="#1DB954" opacity="0.62"/><rect x="250" y="421" width="9" height="159" rx="4.5" fill="#1DB954" opacity="0.18"/><rect x="271" y="442" width="9" height="138" rx="4.5" fill="#1DB954" opacity="0.29"/><rect x="292" y="300" width="9" height="280" rx="4.5" fill="#1DB954" opacity="0.40"/><rect x="313" y="264" width="9" height="316" rx="4.5" fill="#1DB954" opacity="0.51"/><rect x="334" y="259" width="9" height="321" rx="4.5" fill="#1DB954" opacity="0.62"/><rect x="355" y="297" width="9" height="283" rx="4.5" fill="#1DB954" opacity="0.18"/><rect x="376" y="337" width="9" height="243" rx="4.5" fill="#1DB954" opacity="0.29"/><rect x="397" y="463" width="9" height="117" rx="4.5" fill="#1DB954" opacity="0.40"/><rect x="418" y="422" width="9" height="158" rx="4.5" fill="#1DB954" opacity="0.51"/><rect x="439" y="463" width="9" height="117" rx="4.5" fill="#1DB954" opacity="0.62"/><rect x="460" y="273" width="9" height="307" rx="4.5" fill="#1DB954" opacity="0.18"/><rect x="481" y="341" width="9" height="239" rx="4.5" fill="#1DB954" opacity="0.29"/><rect x="502" y="533" width="9" height="47" rx="4.5" fill="#1DB954" opacity="0.40"/><rect x="523" y="508" width="9" height="72" rx="4.5" fill="#1DB954" opacity="0.51"/><rect x="544" y="459" width="9" height="121" rx="4.5" fill="#1DB954" opacity="0.62"/><rect x="565" y="519" width="9" height="61" rx="4.5" fill="#1DB954" opacity="0.18"/>
+  <text x="52" y="478" font-family="Inter, Helvetica, Arial, sans-serif" font-size="46" font-weight="800" letter-spacing="-1.2" fill="#F5F5F5">TANGALOG</text><text x="52" y="524" font-family="Inter, Helvetica, Arial, sans-serif" font-size="46" font-weight="800" letter-spacing="-1.2" fill="#F5F5F5">NIGHTS</text>
+  <text x="52" y="574" font-family="Inter, Helvetica, Arial, sans-serif" font-size="22"
+        font-weight="500" letter-spacing="2.4" fill="#1DB954" opacity="0.85">BAI-J</text>
+  <rect width="640" height="640" filter="url(#grain)" opacity="0.5"/>
+</svg>

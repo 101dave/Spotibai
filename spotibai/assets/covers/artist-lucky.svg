@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="Lucky7">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a1526"/>
+      <stop offset="100%" stop-color="#04070d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#5B8CFF" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#5B8CFF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.055"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <rect width="640" height="640" fill="url(#glow)"/>
+  <rect x="83" y="483" width="61" height="183" rx="10" fill="#5B8CFF" opacity="0.08" transform="rotate(4 83 483)"/><rect x="558" y="111" width="185" height="124" rx="10" fill="#5B8CFF" opacity="0.14" transform="rotate(-12 558 111)"/><rect x="295" y="234" width="116" height="155" rx="10" fill="#5B8CFF" opacity="0.18" transform="rotate(2 295 234)"/><rect x="542" y="592" width="129" height="55" rx="10" fill="#5B8CFF" opacity="0.08" transform="rotate(-14 542 592)"/><rect x="515" y="426" width="101" height="79" rx="10" fill="#5B8CFF" opacity="0.11" transform="rotate(-14 515 426)"/><rect x="-23" y="61" width="75" height="156" rx="10" fill="#5B8CFF" opacity="0.14" transform="rotate(9 -23 61)"/><rect x="266" y="544" width="151" height="162" rx="10" fill="#5B8CFF" opacity="0.19" transform="rotate(-8 266 544)"/><rect x="518" y="550" width="154" height="109" rx="10" fill="#5B8CFF" opacity="0.16" transform="rotate(-5 518 550)"/><rect x="101" y="97" width="149" height="99" rx="10" fill="#5B8CFF" opacity="0.14" transform="rotate(-12 101 97)"/><rect x="-33" y="425" width="190" height="167" rx="10" fill="#5B8CFF" opacity="0.19" transform="rotate(-11 -33 425)"/><rect x="472" y="465" width="183" height="172" rx="10" fill="#5B8CFF" opacity="0.11" transform="rotate(16 472 465)"/><rect x="210" y="53" width="96" height="50" rx="10" fill="#5B8CFF" opacity="0.05" transform="rotate(6 210 53)"/><rect x="229" y="91" width="165" height="79" rx="10" fill="#5B8CFF" opacity="0.12" transform="rotate(10 229 91)"/><rect x="135" y="432" width="153" height="125" rx="10" fill="#5B8CFF" opacity="0.12" transform="rotate(1 135 432)"/><rect x="174" y="278" width="61" height="69" rx="10" fill="#5B8CFF" opacity="0.15" transform="rotate(8 174 278)"/><rect x="28" y="439" width="75" height="168" rx="10" fill="#5B8CFF" opacity="0.13" transform="rotate(-17 28 439)"/>
+  <text x="52" y="524" font-family="Inter, Helvetica, Arial, sans-serif" font-size="46" font-weight="800" letter-spacing="-1.2" fill="#EDF3FF">LUCKY7</text>
+  <text x="52" y="574" font-family="Inter, Helvetica, Arial, sans-serif" font-size="22"
+        font-weight="500" letter-spacing="2.4" fill="#5B8CFF" opacity="0.85">OPEN VERSE</text>
+  <rect width="640" height="640" filter="url(#grain)" opacity="0.5"/>
+</svg>

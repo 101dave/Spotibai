@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#121212" />
+  <title>SpotiBai — music &amp; TikTok drops</title>
+  <meta name="description" content="A lightweight Spotify clone with a dual audio + TikTok video engine. Built with vanilla ES modules and Supabase." />
+
+  <link rel="stylesheet" href="./css/tokens.css" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="icon" href="./assets/covers/album-fyp-vol1.svg" type="image/svg+xml" />
+</head>
+<body>
+
+<!-- ==========================================================================
+     ICON SPRITE — one inline source of truth, referenced by <use href="#i-…">
+     Keeps the app network-free (no icon fonts, no CDN) and lets JS reuse it.
+     ========================================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" class="visually-hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.1 2.6 10.7a1 1 0 0 0 .64 1.77H4.4v7.1c0 .66.53 1.2 1.18 1.2h4.06a.6.6 0 0 0 .6-.6v-4.4c0-.6.48-1.08 1.08-1.08h1.36c.6 0 1.08.49 1.08 1.08v4.4c0 .33.27.6.6.6h4.06c.65 0 1.18-.54 1.18-1.2v-7.1h1.16a1 1 0 0 0 .64-1.77L12 3.1Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M10.7 3.4a7.3 7.3 0 1 0 0 14.6 7.3 7.3 0 0 0 0-14.6Zm4.9 12.6L20.4 21"/></symbol>
+    <symbol id="i-library" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3.6h2.8v16.8H3zM8.2 3.6h2.8v16.8H8.2zM13.6 4.6l2.7-.72 4.1 15.5-2.7.72z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path fill="currentColor" d="M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7z"/></symbol>
+    <symbol id="i-chev-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-chev-right" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-chev-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 9l7 7 7-7"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M7.5 4.4c0-.9 1-1.5 1.8-1l10 6.8c.8.5.8 1.6 0 2.1l-10 6.8c-.8.5-1.8-.1-1.8-1V4.4Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path fill="currentColor" d="M6.5 3.8h3.4c.4 0 .7.3.7.7v15c0 .4-.3.7-.7.7H6.5a.7.7 0 0 1-.7-.7v-15c0-.4.3-.7.7-.7Zm7.6 0h3.4c.4 0 .7.3.7.7v15c0 .4-.3.7-.7.7h-3.4a.7.7 0 0 1-.7-.7v-15c0-.4.3-.7.7-.7Z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path fill="currentColor" d="M5 4.6c0-.8.9-1.3 1.6-.9l8.9 5.9V4.4h2.6v15.2h-2.6v-5.2l-8.9 5.9c-.7.4-1.6-.1-1.6-.9V4.6Z"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path fill="currentColor" d="M19 4.6c0-.8-.9-1.3-1.6-.9L8.5 9.6V4.4H5.9v15.2h2.6v-5.2l8.9 5.9c.7.4 1.6-.1 1.6-.9V4.6Z"/></symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M17 3.5 20.5 7 17 10.5M17 13.5 20.5 17 17 20.5M3.5 7h3.2c1.2 0 2.3.6 3 1.6l4.6 6.8c.7 1 1.8 1.6 3 1.6h3.2M3.5 17h3.2c1.2 0 2.3-.6 3-1.6l.9-1.3M14.4 8.9l.9-1.3c.7-1 1.8-1.6 3-1.6h2.2"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M17 3.5 20.5 7 17 10.5M3.5 11.5v-1A3.5 3.5 0 0 1 7 7h13.5M7 20.5 3.5 17 7 13.5M20.5 12.5v1a3.5 3.5 0 0 1-3.5 3.5H3.5"/></symbol>
+    <symbol id="i-repeat-one" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M17 3.5 20.5 7 17 10.5M3.5 11.5v-1A3.5 3.5 0 0 1 7 7h13.5M7 20.5 3.5 17 7 13.5M20.5 12.5v1a3.5 3.5 0 0 1-3.5 3.5H3.5"/><text x="12" y="15.4" font-size="7.4" font-weight="700" text-anchor="middle" fill="currentColor" font-family="Inter,Arial,sans-serif">1</text></symbol>
+    <symbol id="i-volume-high" viewBox="0 0 24 24"><path fill="currentColor" d="M11 4.3 6.6 8H3.4c-.5 0-.9.4-.9.9v6.2c0 .5.4.9.9.9h3.2l4.4 3.7c.6.5 1.5.1 1.5-.7V5c0-.8-.9-1.2-1.5-.7Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M15.6 8.6a4.8 4.8 0 0 1 0 6.8M18.4 6a8.5 8.5 0 0 1 0 12"/></symbol>
+    <symbol id="i-volume-low" viewBox="0 0 24 24"><path fill="currentColor" d="M11 4.3 6.6 8H3.4c-.5 0-.9.4-.9.9v6.2c0 .5.4.9.9.9h3.2l4.4 3.7c.6.5 1.5.1 1.5-.7V5c0-.8-.9-1.2-1.5-.7Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M15.6 8.6a4.8 4.8 0 0 1 0 6.8"/></symbol>
+    <symbol id="i-volume-mute" viewBox="0 0 24 24"><path fill="currentColor" d="M11 4.3 6.6 8H3.4c-.5 0-.9.4-.9.9v6.2c0 .5.4.9.9.9h3.2l4.4 3.7c.6.5 1.5.1 1.5-.7V5c0-.8-.9-1.2-1.5-.7Z"/><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="m15.5 9.5 5 5M20.5 9.5l-5 5"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M12 20.4s-7.9-4.7-7.9-9.8A4.3 4.3 0 0 1 12 7.7a4.3 4.3 0 0 1 7.9 2.9c0 5.1-7.9 9.8-7.9 9.8Z"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M5.4 10.4a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Zm6.6 0a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Zm6.6 0a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 4H4v5M15 4h5v5M15 20h5v-5M9 20H4v-5"/></symbol>
+    <symbol id="i-collapse" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 9h5V4M20 9h-5V4M20 15h-5v5M4 15h5v5"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M14 4h6v6M20 4l-8.5 8.5M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path fill="currentColor" d="M20 3.2c0-.7-.6-1.2-1.3-1.1L9.3 4.3c-.6.1-1 .6-1 1.2v9.8a3.6 3.6 0 1 0 2 3.2V7.1l8.7-1.7v6.6a3.6 3.6 0 1 0 2 3.2V3.2Z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17Zm0 4v4.8l3.2 1.9"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 5.4h11a1.6 1.6 0 0 1 1.6 1.6v2.4l3.5-2.2c.5-.3 1.1 0 1.1.6v8.4c0 .6-.6.9-1.1.6l-3.5-2.2V17a1.6 1.6 0 0 1-1.6 1.6h-11A1.6 1.6 0 0 1 2.9 17V7c0-.9.7-1.6 1.6-1.6Z"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M6.5 4.2h11a.8.8 0 0 1 .8.8v15l-6.3-4.3-6.3 4.3V5a.8.8 0 0 1 .8-.8Z"/></symbol>
+    <symbol id="i-comment" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M20.5 12c0 4.1-3.8 7.4-8.5 7.4a10 10 0 0 1-2.9-.4L4 20.5l1.3-3.6A7 7 0 0 1 3.5 12c0-4.1 3.8-7.4 8.5-7.4s8.5 3.3 8.5 7.4Z"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M13.5 5.5 20 11l-6.5 5.5v-3.4c-4.2 0-7 1.8-8.5 4.4.3-5.8 3.4-9.6 8.5-10V5.5Z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="m5 12.8 4.4 4.4L19 6.6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17Zm0 4.1v.1m0 3.4v5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.5a4.4 4.4 0 1 0 0 8.8 4.4 4.4 0 0 0 0-8.8Zm0 10.6c-4.2 0-7.6 2.3-7.6 5.2 0 .7.6 1.2 1.2 1.2h12.8c.7 0 1.2-.5 1.2-1.2 0-2.9-3.4-5.2-7.6-5.2Z"/></symbol>
+    <symbol id="i-log-out" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M9.5 4H5.8A1.8 1.8 0 0 0 4 5.8v12.4A1.8 1.8 0 0 0 5.8 20h3.7M14 8.5 17.5 12 14 15.5M17 12H9"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 8.9a3.1 3.1 0 1 0 0 6.2 3.1 3.1 0 0 0 0-6.2Zm8 3.1c0-.5 0-1-.1-1.4l2-1.5-2-3.4-2.3 1a8 8 0 0 0-2.4-1.4L14.8 3H9.2l-.4 2.3A8 8 0 0 0 6.4 6.7l-2.3-1-2 3.4 2 1.5A8.6 8.6 0 0 0 4 12c0 .5 0 1 .1 1.4l-2 1.5 2 3.4 2.3-1a8 8 0 0 0 2.4 1.4l.4 2.3h5.6l.4-2.3a8 8 0 0 0 2.4-1.4l2.3 1 2-3.4-2-1.5c.1-.4.1-.9.1-1.4Z"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 3.5c-4.1 0-7.5 1.3-7.5 2.9S7.9 9.3 12 9.3s7.5-1.3 7.5-2.9S16.1 3.5 12 3.5Zm7.5 2.9v11.3c0 1.6-3.4 2.9-7.5 2.9s-7.5-1.3-7.5-2.9V6.4m15 5.6c0 1.6-3.4 2.9-7.5 2.9s-7.5-1.3-7.5-2.9"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4.5 7h15M9 7V4.8h6V7m-8 0 .9 12.2c0 .6.5 1 1.1 1h6c.6 0 1.1-.4 1.1-1L17 7"/></symbol>
+    <symbol id="i-queue" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="M4 6.5h16M4 12h10M4 17.5h7"/></symbol>
+    <symbol id="i-spotibai" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19Zm4.3 13.8a.7.7 0 0 1-1 .2c-2.7-1.6-6.1-2-10.1-1.1a.7.7 0 1 1-.3-1.3c4.4-1 8.2-.6 11.2 1.3.4.2.5.6.2.9Zm1.2-2.7a.9.9 0 0 1-1.2.3c-3.1-1.9-7.8-2.5-11.5-1.4a.9.9 0 1 1-.5-1.7c4.2-1.2 9.4-.6 12.9 1.6.4.2.5.8.3 1.2Zm.1-2.8C13.9 8.6 8 8.4 4.7 9.4a1 1 0 1 1-.6-2C8 6.2 14.5 6.5 18.7 9a1 1 0 0 1-1 1.8Z"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 24 24"><path fill="currentColor" d="M16.6 2.3c.3 1.9 1.4 3.5 3.1 4.3.7.3 1.4.5 2.2.5v3.3a8.7 8.7 0 0 1-4.2-1.2v6.4c0 1.9-.6 3.6-1.9 4.9a6.3 6.3 0 0 1-4.7 1.9 6.2 6.2 0 0 1-4.6-1.9 6.4 6.4 0 0 1-1.9-4.7c0-1.9.7-3.5 2-4.8a6.3 6.3 0 0 1 4.7-1.9c.3 0 .6 0 .9.1v3.4c-.3-.1-.6-.2-.9-.2a3 3 0 1 0 2.1 5.1c.6-.6.8-1.4.8-2.4V2.3h2.4Z"/></symbol>
+  </defs>
+</svg>
+
+<div class="app" id="app">
+
+  <!-- ======================= SIDEBAR ======================= -->
+  <aside class="sidebar" id="sidebar" data-open="false" aria-label="Primary navigation">
+    <div class="sidebar__panel">
+      <a class="brand" href="#/home" aria-label="SpotiBai home">
+        <span class="brand__mark"><svg aria-hidden="true"><use href="#i-spotibai" /></svg></span>
+        <span class="brand__text">
+          SpotiBai
+          <small>music &amp; fyp drops</small>
+        </span>
+      </a>
+
+      <nav class="nav" aria-label="Sections">
+        <a class="nav__item" href="#/home" data-nav="home">
+          <svg aria-hidden="true"><use href="#i-home" /></svg><span>Home</span>
+        </a>
+        <a class="nav__item" href="#/search" data-nav="search">
+          <svg aria-hidden="true"><use href="#i-search" /></svg><span>Search</span>
+        </a>
+        <a class="nav__item" href="#/library" data-nav="library">
+          <svg aria-hidden="true"><use href="#i-library" /></svg><span>Your Library</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar__panel sidebar__panel--library">
+      <div class="library__head">
+        <span class="library__title">
+          <svg aria-hidden="true"><use href="#i-library" /></svg>
+          <span class="library__row-text">Your Library</span>
+        </span>
+        <button class="icon-btn" type="button" data-action="create-playlist"
+                title="Create playlist" aria-label="Create playlist">
+          <svg aria-hidden="true"><use href="#i-plus" /></svg>
+        </button>
+      </div>
+
+      <div class="library__list" id="libraryList" aria-live="polite"></div>
+
+      <div class="sidebar__foot">
+        <button class="badge badge--demo" type="button" data-action="open-source"
+                id="sourceBadge" title="Data source — click to configure">
+          <svg style="width:11px;height:11px" aria-hidden="true"><use href="#i-database" /></svg>
+          <span id="sourceBadgeText">Demo data</span>
+        </button>
+        <button class="icon-btn" type="button" data-action="open-source"
+                title="Connection settings" aria-label="Connection settings">
+          <svg aria-hidden="true"><use href="#i-settings" /></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======================= MAIN ======================= -->
+  <main class="main" id="main">
+    <header class="topbar">
+      <button class="icon-btn menu-toggle" type="button" id="menuToggle"
+              aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+        <svg aria-hidden="true"><use href="#i-queue" /></svg>
+      </button>
+
+      <div class="topbar__history">
+        <button class="icon-btn" type="button" data-action="history-back" aria-label="Go back">
+          <svg aria-hidden="true"><use href="#i-chev-left" /></svg>
+        </button>
+        <button class="icon-btn" type="button" data-action="history-forward" aria-label="Go forward">
+          <svg aria-hidden="true"><use href="#i-chev-right" /></svg>
+        </button>
+      </div>
+
+      <div class="topbar__spacer"></div>
+
+      <div class="user-menu" id="userMenu">
+        <button class="user-pill" type="button" data-action="toggle-user-menu"
+                aria-haspopup="menu" aria-expanded="false" aria-controls="userMenuList">
+          <span class="user-pill__avatar" id="userAvatar" aria-hidden="true">SB</span>
+          <span class="user-pill__name" id="userName">Guest listener</span>
+          <svg aria-hidden="true"><use href="#i-chev-down" /></svg>
+        </button>
+
+        <div class="menu" id="userMenuList" role="menu" data-open="false">
+          <p class="menu__label" id="menuAccountLabel">Not signed in</p>
+          <button class="menu__item" type="button" role="menuitem" data-action="open-auth">
+            <svg aria-hidden="true"><use href="#i-user" /></svg><span>Sign in / Sign up</span>
+          </button>
+          <button class="menu__item" type="button" role="menuitem" data-action="open-source">
+            <svg aria-hidden="true"><use href="#i-database" /></svg><span>Connection settings</span>
+          </button>
+          <div class="menu__sep"></div>
+          <button class="menu__item" type="button" role="menuitem" data-action="toggle-video-panel">
+            <svg aria-hidden="true"><use href="#i-tiktok" /></svg><span>Toggle video panel</span>
+          </button>
+          <button class="menu__item" type="button" role="menuitem" data-action="sign-out" hidden id="signOutItem">
+            <svg aria-hidden="true"><use href="#i-log-out" /></svg><span>Sign out</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dynamic view viewport. Views are rendered by js/ui/views.js -->
+    <div class="view" id="viewRoot" tabindex="-1"></div>
+  </main>
+
+  <!-- ======================= PLAYER BAR ======================= -->
+  <footer class="player" id="playerBar" aria-label="Media player">
+    <!-- Now playing -->
+    <div class="player__now">
+      <div class="player__art-wrap player__art-wrap--empty" id="playerArtWrap">
+        <svg aria-hidden="true"><use href="#i-music" /></svg>
+        <img class="player__art" id="playerArt" alt="" hidden />
+      </div>
+      <div class="player__text">
+        <span class="player__title" id="playerTitle">Nothing playing</span>
+        <a class="player__artist" id="playerArtist" href="#/home">Pick a track to start</a>
+      </div>
+      <button class="icon-btn player__like" type="button" data-action="like-current"
+              aria-label="Save to Liked Songs" aria-pressed="false">
+        <svg aria-hidden="true"><use href="#i-heart" /></svg>
+      </button>
+    </div>
+
+    <!-- Transport -->
+    <div class="player__center">
+      <div class="player__controls">
+        <button class="icon-btn" type="button" data-ctl="shuffle"
+                aria-label="Enable shuffle" aria-pressed="false" title="Shuffle">
+          <svg aria-hidden="true"><use href="#i-shuffle" /></svg>
+        </button>
+        <button class="icon-btn" type="button" data-ctl="prev" aria-label="Previous track" title="Previous">
+          <svg aria-hidden="true"><use href="#i-prev" /></svg>
+        </button>
+        <button class="player__toggle" type="button" data-ctl="toggle"
+                aria-label="Play" id="playToggle">
+          <svg aria-hidden="true"><use href="#i-play" /></svg>
+        </button>
+        <button class="icon-btn" type="button" data-ctl="next" aria-label="Next track" title="Next">
+          <svg aria-hidden="true"><use href="#i-next" /></svg>
+        </button>
+        <button class="icon-btn" type="button" data-ctl="repeat"
+                aria-label="Enable repeat" aria-pressed="false" title="Repeat">
+          <svg aria-hidden="true"><use href="#i-repeat" /></svg>
+        </button>
+      </div>
+
+      <div class="player__timeline">
+        <span class="player__time" id="timeElapsed">0:00</span>
+
+        <!-- Scrubbable timeline. Progress is exposed as the --pct custom prop. -->
+        <div class="scrub is-disabled" id="scrub" role="slider" tabindex="0"
+             aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+             aria-valuetext="0:00 of 0:00">
+          <div class="scrub__track">
+            <div class="scrub__buffered" id="scrubBuffered"></div>
+            <div class="scrub__fill" id="scrubFill"></div>
+          </div>
+          <div class="scrub__knob"></div>
+        </div>
+
+        <span class="player__time" id="timeTotal">0:00</span>
+      </div>
+    </div>
+
+    <!-- Right cluster -->
+    <div class="player__side">
+      <button class="player__source" type="button" data-action="toggle-video-panel"
+              id="sourceIndicator" title="Open the TikTok video panel" hidden>
+        <svg style="width:12px;height:12px" aria-hidden="true"><use href="#i-tiktok" /></svg>
+        <span>Video</span>
+      </button>
+
+      <button class="icon-btn" type="button" data-action="toggle-queue" aria-label="Play queue" title="Queue">
+        <svg aria-hidden="true"><use href="#i-queue" /></svg>
+      </button>
+
+      <div class="volume" id="volumeBox">
+        <button class="icon-btn" type="button" data-ctl="mute" aria-label="Mute" aria-pressed="false" id="muteBtn">
+          <svg aria-hidden="true"><use href="#i-volume-high" /></svg>
+        </button>
+        <div class="scrub" id="volumeScrub" role="slider" tabindex="0"
+             aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+          <div class="scrub__track">
+            <div class="scrub__fill" id="volumeFill"></div>
+          </div>
+          <div class="scrub__knob"></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================= TIKTOK VIDEO PANEL ======================= -->
+  <aside class="video-panel" id="videoPanel" data-open="false" data-expanded="false"
+         aria-label="TikTok video player" aria-hidden="true">
+    <div class="video-panel__head">
+      <div class="video-panel__author">
+        <img class="video-panel__avatar" id="videoAvatar" alt="" src="./assets/covers/artist-spotibai.svg" />
+        <div style="min-width:0">
+          <div class="video-panel__handle" id="videoHandle">@spotibai_ph</div>
+          <div class="video-panel__posted" id="videoPosted">—</div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button class="icon-btn" type="button" data-action="toggle-video-expand" aria-label="Expand video panel">
+        <svg aria-hidden="true"><use href="#i-expand" /></svg>
+      </button>
+      <button class="icon-btn" type="button" data-action="close-video" aria-label="Close video panel">
+        <svg aria-hidden="true"><use href="#i-close" /></svg>
+      </button>
+    </div>
+
+    <div class="video-panel__stage" id="videoStage">
+      <img class="video-panel__poster" id="videoPoster" alt="" hidden />
+      <!-- Mount point: the media engine injects <video> or <iframe> here -->
+      <div id="videoMount" style="position:absolute;inset:0"></div>
+
+      <div class="video-rail" id="videoRail">
+        <button class="video-rail__item" type="button" data-action="like-current" aria-label="Like video">
+          <svg aria-hidden="true"><use href="#i-heart" /></svg>
+          <span id="videoLikes">0</span>
+        </button>
+        <span class="video-rail__item">
+          <svg aria-hidden="true"><use href="#i-comment" /></svg>
+          <span id="videoComments">0</span>
+        </span>
+        <span class="video-rail__item">
+          <svg aria-hidden="true"><use href="#i-share" /></svg>
+          <span id="videoShares">0</span>
+        </span>
+        <a class="video-rail__item" id="videoOpenLink" href="#" target="_blank" rel="noopener noreferrer"
+           aria-label="Open on TikTok">
+          <svg aria-hidden="true"><use href="#i-external" /></svg>
+          <span>TikTok</span>
+        </a>
+      </div>
+
+      <div class="video-panel__fallback" id="videoFallback" hidden>
+        <svg style="width:34px;height:34px" aria-hidden="true"><use href="#i-tiktok" /></svg>
+        <p>The embedded TikTok player can’t load here (offline preview or blocked embed).<br />
+           Playback continues from the track’s audio bed.</p>
+        <button class="btn btn--sm btn--accent" type="button" id="videoLoadEmbed" data-action="load-embed">
+          Load TikTok player
+        </button>
+        <a class="btn btn--sm" id="videoFallbackLink" href="#" target="_blank" rel="noopener noreferrer">
+          <svg style="width:14px;height:14px" aria-hidden="true"><use href="#i-external" /></svg>
+          Open on TikTok
+        </a>
+      </div>
+    </div>
+
+    <div class="video-panel__body">
+      <p class="video-panel__caption" id="videoCaption">—</p>
+      <div class="video-panel__tags" id="videoTags"></div>
+      <div class="video-panel__foot">
+        <span class="video-panel__note">
+          <svg aria-hidden="true"><use href="#i-info" /></svg>
+          <span id="videoNote">TikTok-sourced track</span>
+        </span>
+        <button class="btn btn--sm btn--ghost" type="button" data-action="close-video">Minimize</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Drawer scrim (mobile) -->
+  <div class="scrim" id="scrim" hidden></div>
+
+  <!-- Modal + toast mount points -->
+  <div id="modalRoot"></div>
+  <div class="toast-stack" id="toastStack" role="status" aria-live="polite"></div>
+</div>
+
+<!-- ==========================================================================
+     MEDIA ELEMENTS
+     A single HTMLAudioElement instance is created in JS (js/audioPlayer.js) so
+     it can be reused across track changes without re-binding listeners. The
+     <video> element is created on demand by the same module for TikTok / mp4
+     sources. Declaring the tag here keeps the DOM contract explicit.
+     ========================================================================== -->
+<audio id="audioEl" preload="metadata"></audio>
+
+<noscript>
+  <div style="padding:24px;color:#fff;font-family:system-ui">
+    SpotiBai needs JavaScript enabled — it renders client-side.
+  </div>
+</noscript>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>

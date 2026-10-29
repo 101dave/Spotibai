@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 960" width="540" height="960" role="img" aria-label="Coron Song">
+  <defs>
+    <linearGradient id="bg" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#031712"/><stop offset="100%" stop-color="#020806"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="34%" r="62%">
+      <stop offset="0%" stop-color="#1DB954" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#1DB954" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.06"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="540" height="960" fill="url(#bg)"/>
+  <rect width="540" height="960" fill="url(#glow)"/>
+  <path d="M-20 220 C 162.0 174, 324.0 266, 560 200" fill="none" stroke="#1DB954" stroke-width="1.6" opacity="0.48"/><path d="M-20 266 C 162.0 220, 324.0 312, 560 246" fill="none" stroke="#1DB954" stroke-width="2.6" opacity="0.45"/><path d="M-20 312 C 162.0 266, 324.0 358, 560 292" fill="none" stroke="#1DB954" stroke-width="3.6" opacity="0.43"/><path d="M-20 358 C 162.0 312, 324.0 404, 560 338" fill="none" stroke="#1DB954" stroke-width="1.6" opacity="0.40"/><path d="M-20 404 C 162.0 358, 324.0 450, 560 384" fill="none" stroke="#1DB954" stroke-width="2.6" opacity="0.38"/><path d="M-20 450 C 162.0 404, 324.0 496, 560 430" fill="none" stroke="#1DB954" stroke-width="3.6" opacity="0.35"/><path d="M-20 496 C 162.0 450, 324.0 542, 560 476" fill="none" stroke="#1DB954" stroke-width="1.6" opacity="0.32"/><path d="M-20 542 C 162.0 496, 324.0 588, 560 522" fill="none" stroke="#1DB954" stroke-width="2.6" opacity="0.30"/><path d="M-20 588 C 162.0 542, 324.0 634, 560 568" fill="none" stroke="#1DB954" stroke-width="3.6" opacity="0.27"/><path d="M-20 634 C 162.0 588, 324.0 680, 560 614" fill="none" stroke="#1DB954" stroke-width="1.6" opacity="0.25"/><path d="M-20 680 C 162.0 634, 324.0 726, 560 660" fill="none" stroke="#1DB954" stroke-width="2.6" opacity="0.22"/><path d="M-20 726 C 162.0 680, 324.0 772, 560 706" fill="none" stroke="#1DB954" stroke-width="3.6" opacity="0.19"/><path d="M-20 772 C 162.0 726, 324.0 818, 560 752" fill="none" stroke="#1DB954" stroke-width="1.6" opacity="0.17"/><path d="M-20 818 C 162.0 772, 324.0 864, 560 798" fill="none" stroke="#1DB954" stroke-width="2.6" opacity="0.14"/>
+  <text x="42" y="770" font-family="Inter, Helvetica, Arial, sans-serif" font-size="44"
+        font-weight="800" letter-spacing="-1.1" fill="#EFFFF7">SpotiBai</text>
+  <text x="42" y="820" font-family="Inter, Helvetica, Arial, sans-serif" font-size="20"
+        font-weight="600" letter-spacing="3" fill="#1DB954">BISAYA</text>
+  <rect width="540" height="960" filter="url(#grain)" opacity="0.5"/>
+</svg>

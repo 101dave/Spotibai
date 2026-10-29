@@ -1,0 +1,100 @@
+/**
+ * config.js — runtime configuration
+ * ---------------------------------------------------------------------------
+ * Credentials are intentionally not hard-coded in source control. Provide them
+ * either by:
+ *   1. Editing the defaults below, or
+ *   2. The in-app "Connection settings" dialog (persisted to localStorage), or
+ *   3. An optional `window.__SPOTIBAI_CONFIG__` injected by your host page.
+ *
+ * When no valid credentials are present the app boots into DEMO mode: a fully
+ * functional local repository (js/data/localProvider.js) backed by
+ * localStorage, so every screen works offline with zero setup.
+ */
+
+const STORAGE_KEY = 'spotibai:config';
+
+const DEFAULTS = {
+  SUPABASE_URL: '',
+  SUPABASE_ANON_KEY: '',
+
+  /** ESM entry point for supabase-js. Swap for a self-hosted bundle if needed. */
+  SUPABASE_MODULE: 'https://esm.sh/@supabase/supabase-js@2.45.4?bundle',
+
+  /** The TikTok account whose drops feed the video rail. */
+  TIKTOK_HANDLE: 'spotibai_ph',
+  TIKTOK_PROFILE: 'https://www.tiktok.com/@spotibai_ph',
+
+  /** Where public Supabase Storage buckets live (derived automatically). */
+  BUCKETS: { audio: 'audio', covers: 'covers', videos: 'videos' },
+
+  /** How long to wait for the TikTok embed before showing the fallback card. */
+  TIKTOK_EMBED_TIMEOUT_MS: 4500,
+
+  /**
+   * Mount the TikTok iframe automatically, or only after the listener taps
+   * "Load TikTok player". Gated (false) is the default because it:
+   *   • avoids third-party cookies/trackers until consent,
+   *   • survives TikTok rate-limiting and region blocks gracefully,
+   *   • keeps the poster art on screen instead of a white error frame.
+   */
+  TIKTOK_AUTOLOAD_EMBED: false,
+
+  /** Simulated latency for the demo repository (keeps skeletons honest). */
+  DEMO_LATENCY_MS: 140,
+};
+
+function readOverrides() {
+  const fromWindow =
+    typeof window !== 'undefined' && window.__SPOTIBAI_CONFIG__
+      ? window.__SPOTIBAI_CONFIG__
+      : {};
+
+  let fromStorage = {};
+  try {
+    fromStorage = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {};
+  } catch {
+    fromStorage = {};
+  }
+
+  return { ...fromStorage, ...fromWindow };
+}
+
+export const CONFIG = { ...DEFAULTS, ...readOverrides() };
+
+export const SUPABASE_URL_RE = /^https:\/\/[a-z0-9-]+\.supabase\.(co|in)$/i;
+
+/** True when both a plausible project URL and a JWT-ish anon key are present. */
+export function hasSupabaseCredentials(cfg = CONFIG) {
+  return (
+    SUPABASE_URL_RE.test(String(cfg.SUPABASE_URL || '').replace(/\/$/, '')) &&
+    typeof cfg.SUPABASE_ANON_KEY === 'string' &&
+    cfg.SUPABASE_ANON_KEY.length > 60
+  );
+}
+
+/** Persist credentials from the settings dialog. Pass empty strings to clear. */
+export function saveSupabaseCredentials(url, anonKey) {
+  const next = {
+    ...(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}),
+    SUPABASE_URL: String(url || '').trim().replace(/\/$/, ''),
+    SUPABASE_ANON_KEY: String(anonKey || '').trim(),
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  Object.assign(CONFIG, next);
+  return next;
+}
+
+/** Build a public storage URL from a bucket + object path, when configured. */
+export function publicStorageUrl(bucket, path) {
+  if (!path) return null;
+  if (/^(https?:|data:|\/|\.\/)/i.test(path)) return path; // already a URL/path
+  return `${CONFIG.SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+}
+
+export const STORAGE_KEYS = {
+  config: STORAGE_KEY,
+  player: 'spotibai:player',
+  demoDb: 'spotibai:demo-db',
+  demoSession: 'spotibai:demo-session',
+};

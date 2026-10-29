@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="Bisaya Sunrise">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2a1206"/>
+      <stop offset="100%" stop-color="#12121f"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FF8A3D" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#FF8A3D" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.055"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="640" height="640" fill="url(#bg)"/>
+  <rect width="640" height="640" fill="url(#glow)"/>
+  <path d="M0 250 Q 320.0 180 640 250" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.62"/><path d="M0 276 Q 320.0 202 640 276" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.56"/><path d="M0 302 Q 320.0 224 640 302" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.51"/><path d="M0 328 Q 320.0 246 640 328" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.45"/><path d="M0 354 Q 320.0 268 640 354" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.40"/><path d="M0 380 Q 320.0 290 640 380" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.34"/><path d="M0 406 Q 320.0 312 640 406" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.29"/><path d="M0 432 Q 320.0 334 640 432" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.23"/><path d="M0 458 Q 320.0 356 640 458" fill="none" stroke="#FF8A3D" stroke-width="2.4" opacity="0.18"/><circle cx="320.0" cy="268.8" r="86" fill="#FF8A3D" opacity="0.16"/><circle cx="320.0" cy="268.8" r="86" fill="none" stroke="#FF8A3D" stroke-width="2" opacity="0.6"/>
+  <text x="52" y="478" font-family="Inter, Helvetica, Arial, sans-serif" font-size="46" font-weight="800" letter-spacing="-1.2" fill="#FFF6EC">BISAYA</text><text x="52" y="524" font-family="Inter, Helvetica, Arial, sans-serif" font-size="46" font-weight="800" letter-spacing="-1.2" fill="#FFF6EC">SUNRISE</text>
+  <text x="52" y="574" font-family="Inter, Helvetica, Arial, sans-serif" font-size="22"
+        font-weight="500" letter-spacing="2.4" fill="#FF8A3D" opacity="0.85">RENEBAI</text>
+  <rect width="640" height="640" filter="url(#grain)" opacity="0.5"/>
+</svg>

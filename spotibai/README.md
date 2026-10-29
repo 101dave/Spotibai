@@ -1,0 +1,167 @@
+# SpotiBai
+
+A lightweight Spotify clone — **HTML5 · modern CSS (Grid/Flexbox) · vanilla ES modules · Supabase** — with a
+dual-media engine that plays standard audio tracks *and* TikTok music-video drops from
+[**@spotibai_ph**](https://www.tiktok.com/@spotibai_ph).
+
+No framework. No bundler. No build step.
+
+---
+
+## Run it
+
+```bash
+# any static server works — ES modules need http(s), not file://
+cd spotibai
+python3 -m http.server 4173
+# → http://localhost:4173
+```
+
+It boots instantly in **demo mode**: a full catalog (4 artists, 4 albums, 8 tracks,
+2 playlists), real generated MP3s, generated cover art, working auth, likes,
+playlist CRUD and playback — all offline, persisted to `localStorage`.
+
+### Connect real Supabase
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. Paste `sql/schema.sql` into the SQL editor → **Run**.
+3. *(optional)* Paste `sql/seed.sql` → **Run** for the demo catalog with the real
+   TikTok video ids.
+4. Upload `assets/audio/*.mp3` to the `audio` bucket and `assets/covers/*.svg` to
+   `covers` (or point the seed's URLs at your own CDN).
+5. In the app: **sidebar → ⚙ / "Demo data" badge → paste Project URL + anon key → Save & reload**.
+   Credentials are stored in `localStorage` only. You can also hard-code them in
+   `js/config.js` or inject `window.__SPOTIBAI_CONFIG__`.
+
+If Supabase is unreachable or the key is wrong, the app **degrades back to demo**
+with a warning badge instead of showing an empty, broken UI.
+
+---
+
+## What's implemented
+
+**Layout** — sidebar (Home / Search / Your Library / Create playlist / profile menu),
+scrollable main viewport, persistent bottom player, and a floating TikTok video panel.
+
+**Views** — Home dashboard (recently played tiles, featured albums, trending TikTok
+drops, top tracks, artists), Search with debounced live results, Library,
+Album, Playlist, Liked Songs, Artist, and a `#/track/:id` deep link that autoplays.
+
+**Player bar** — cover/title/artist, play·pause, next, previous (restarts if >3s in),
+shuffle, repeat (off→all→one), scrubbable timeline with elapsed/total, buffered
+indicator, volume slider + mute, and a "Video" pill that appears only for
+TikTok-sourced tracks.
+
+**Dual media engine**
+- standard tracks → `HTMLAudioElement`
+- direct video files → `<video>`
+- `is_tiktok_source` → **hybrid**: the real TikTok embed for visuals *plus* the
+  track's audio bed as a seekable clock (see `docs/ARCHITECTURE.md` §4)
+
+**State** — one observable store (`js/store.js`): queue, index, is_playing, mode,
+volume, shuffle, repeat, video status, session, likes. Player preferences persist.
+
+**TikTok panel** — 9:16 stage, real caption, hashtags, like/comment/share counts,
+"open on TikTok", expandable, and a consent gate so no third-party iframe loads
+until the listener asks for it.
+
+**Auth** — email/password sign in & sign up, profile menu, sign out, session
+restore. Demo mode accepts any email + 6-char password and never sends it anywhere.
+
+**A11y** — semantic landmarks, labelled controls, `aria-pressed` on every toggle,
+focus trapping in modals, Escape to close, keyboard-navigable rows.
+
+### Keyboard shortcuts
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `Space` / `K` | play / pause | `→` / `←` | seek ±5s (hold `Shift` for ±30s) |
+| `N` | next | `P` | previous |
+| `M` | mute | `S` | shuffle |
+| `R` | repeat | `L` | like current track |
+| `/` | focus search | `Esc` | close panel / menu / drawer |
+
+---
+
+## Project structure
+
+```
+spotibai/
+├── index.html                  semantic shell + inline SVG icon sprite
+├── css/
+│   ├── tokens.css              design tokens: colour, type, spacing, motion, z-index
+│   └── styles.css              layout + components + responsive (14 sections)
+├── js/
+│   ├── app.js                  orchestrator: boot, routing, delegation, sync
+│   ├── store.js                observable state, queue/pref actions, selectors
+│   ├── audioPlayer.js          MediaEngine (dual media) + PlaybackController
+│   ├── supabaseClient.js       repository factory: Supabase | demo fallback
+│   ├── config.js               runtime config, credential handling
+│   ├── utils.js                DOM/format/array helpers (no deps)
+│   ├── data/
+│   │   ├── demoSeed.js         offline catalog, mirrors sql/seed.sql 1:1
+│   │   └── localProvider.js    demo repository (same interface as Supabase)
+│   └── ui/
+│       ├── router.js           hash router + route parser
+│       ├── views.js            pure render functions per view
+│       ├── components.js       pure HTML builders (cards, rows, hero, skeletons)
+│       ├── modal.js            auth, settings, create playlist, queue, confirm
+│       └── toast.js            transient feedback
+├── sql/
+│   ├── schema.sql              tables, indexes, triggers, views, RPCs, RLS, buckets
+│   └── seed.sql                demo catalog incl. verified @spotibai_ph video ids
+├── assets/
+│   ├── audio/                  generated demo MP3s (see tools/gen_audio.py)
+│   └── covers/                 generated SVG artwork
+├── tools/
+│   ├── gen_audio.py            procedural music generator (numpy + lameenc)
+│   └── gen_covers.py           procedural SVG artwork generator
+└── docs/ARCHITECTURE.md        blueprint: layers, ERD, media routing, RLS matrix
+```
+
+---
+
+## About the TikTok content
+
+The two TikTok rows use **real, verified video ids** from `@spotibai_ph`, with the
+live caption and hashtag structure
+(`#SpotiBaiPH #Tangalog #OfficialSpotiBaiPH #bainabai🔥 #SpotiBai`):
+
+| Video id | Caption |
+|---|---|
+| `7681226050852031751` | “Malupit na Bai Spotted on #SpotiBaiPH #Tangalog …” |
+| `7678258030735265042` | “#spotibai #bainabai🔥 — coron song bisaya” |
+
+All other music and artwork in the demo is **original and procedurally generated**
+for this project — nothing is scraped or redistributed.
+
+Embedding third-party TikTok content requires complying with TikTok's terms and
+the creator's rights. The app never proxies or re-hosts TikTok video; it embeds the
+official player and links out.
+
+---
+
+## Deployment
+
+It's static files — deploy the folder anywhere:
+
+```bash
+# Netlify / Vercel / Cloudflare Pages
+#   build command: (none)     output dir: .
+# GitHub Pages
+git subtree push --prefix spotibai origin gh-pages
+# Supabase-hosted
+supabase storage cp -r ./spotibai ss:///site --experimental   # or any bucket + CDN
+```
+
+Because routing is hash-based (`#/album/:id`), **no server rewrites are needed**.
+
+---
+
+## Regenerating the demo assets
+
+```bash
+pip install numpy lameenc
+python3 tools/gen_audio.py    # → assets/audio/*.mp3 (+ manifest.json)
+python3 tools/gen_covers.py   # → assets/covers/*.svg
+```

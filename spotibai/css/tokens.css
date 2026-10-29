@@ -1,0 +1,134 @@
+/* ==========================================================================
+   tokens.css — SpotiBai design tokens
+   Single source of truth for colour, type, spacing, motion and elevation.
+   Every component rule in styles.css consumes only these variables.
+   ========================================================================== */
+
+:root {
+  /* ---- Brand & surfaces ------------------------------------------------ */
+  --bg-base:        #121212;   /* app canvas (Spotify dark)            */
+  --bg-base-deep:   #000000;   /* sidebar / chrome                     */
+  --bg-surface:     #181818;   /* cards, raised panels                 */
+  --bg-surface-2:   #1f1f1f;   /* hovered cards, inputs                */
+  --bg-surface-3:   #2a2a2a;   /* active states, track row hover       */
+  --bg-elevated:    #242424;   /* menus, modals                        */
+  --bg-tint:        #1a1a1a;
+
+  /* ---- Accent ---------------------------------------------------------- */
+  --accent:         #1DB954;   /* Spotify green                        */
+  --accent-bright:  #1ed760;
+  --accent-press:   #169c46;
+  --accent-ink:     #04140a;   /* text on accent fill                  */
+  --accent-soft:    rgba(29, 185, 84, 0.14);
+  --accent-ring:    rgba(29, 185, 84, 0.42);
+
+  /* ---- TikTok source accent ------------------------------------------- */
+  --tiktok:         #FE2C55;
+  --tiktok-2:       #25F4EE;
+  --tiktok-soft:    rgba(254, 44, 85, 0.14);
+
+  /* ---- Typography ------------------------------------------------------ */
+  --text-primary:   #FFFFFF;
+  --text-secondary: #B3B3B3;
+  --text-muted:     #7a7a7a;
+  --text-faint:     #565656;
+  --text-inverse:   #0a0a0a;
+
+  /* ---- Zinc-ish neutral borders --------------------------------------- */
+  --border-subtle:  rgba(255, 255, 255, 0.07);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-strong:  rgba(255, 255, 255, 0.22);
+
+  /* ---- Type scale ------------------------------------------------------ */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --fs-2xs:  0.6875rem;  /* 11px  — meta, table headers  */
+  --fs-xs:   0.75rem;    /* 12px  — captions             */
+  --fs-sm:   0.8125rem;  /* 13px  — nav, secondary       */
+  --fs-base: 0.875rem;   /* 14px  — body                 */
+  --fs-md:   1rem;       /* 16px  — track titles         */
+  --fs-lg:   1.25rem;    /* 20px  — section headers      */
+  --fs-xl:   1.75rem;    /* 28px  — view titles          */
+  --fs-2xl:  2.5rem;     /* 40px  — hero                 */
+  --fs-3xl:  clamp(2rem, 5vw, 3.5rem);  /* album/playlist hero */
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold: 600;
+  --fw-bold:    700;
+  --fw-black:   800;
+
+  --lh-tight: 1.15;
+  --lh-snug:  1.35;
+  --lh-normal: 1.55;
+
+  --tracking-wide: 0.08em;
+  --tracking-wider: 0.16em;
+  --tracking-tight: -0.02em;
+
+  /* ---- Spacing (4px base grid) ---------------------------------------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 48px;
+  --sp-10: 64px;
+
+  /* ---- Radii ----------------------------------------------------------- */
+  --r-xs: 2px;
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-2xl: 24px;
+  --r-pill: 999px;
+  --r-circle: 50%;
+
+  /* ---- Elevation ------------------------------------------------------- */
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:  0 4px 14px rgba(0, 0, 0, 0.5);
+  --shadow-lg:  0 12px 40px rgba(0, 0, 0, 0.65);
+  --shadow-xl:  0 24px 70px rgba(0, 0, 0, 0.8);
+  --shadow-accent: 0 8px 24px rgba(29, 185, 84, 0.32);
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:   120ms;
+  --dur-base:   200ms;
+  --dur-slow:   320ms;
+  --dur-slower: 520ms;
+
+  /* ---- Layout metrics -------------------------------------------------- */
+  --sidebar-w:      292px;
+  --sidebar-w-mini: 84px;
+  --player-h:       92px;
+  --gutter:         8px;
+  --content-max:    1500px;
+  --topbar-h:       64px;
+
+  /* ---- Z-index ladder -------------------------------------------------- */
+  --z-base: 1;
+  --z-sticky: 100;
+  --z-player: 200;
+  --z-video-panel: 300;
+  --z-drawer: 400;
+  --z-modal: 500;
+  --z-toast: 600;
+}
+
+/* Motion + contrast preferences ------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+    --dur-slower: 1ms;
+  }
+}
