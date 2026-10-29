@@ -16,10 +16,9 @@
 --  UI's TikTok card renders authentic content structure. Everything else in
 --  this file is original demo music generated for the project.
 --
---  Their `audio_url` points at a locally generated MP3 so the app still has a
---  seekable timeline when the TikTok embed is unavailable (offline, blocked
---  region, or third-party cookie restrictions). See the media-router section
---  of docs/ARCHITECTURE.md.
+--  Their `audio_url` is NULL on purpose: the generated demo MP3s are not the
+--  same audio as the original posts. Play the official sound in the embedded
+--  TikTok player instead; the app keeps the listener on SpotiBai.
 --
 --  NOTE ON STORAGE: `audio_url` / `cover_url` values below are PUBLIC bucket
 --  URLs. Upload the matching files from /assets in this repo first:
@@ -111,13 +110,14 @@ values
   -- ------------------------------------------------------------------------
   -- TRACKS — TikTok-sourced (video is the primary media)
   --   * video_url      -> canonical share URL, DB derives tiktok_video_id
-  --   * audio_url      -> fallback audio bed so the timeline stays seekable
-  --   * hashtags/etc.  -> mirror the live post, consumed by the video panel
+--   * audio_url      -> NULL; don't play generated demo audio that differs
+--                       from the original TikTok sound
+--   * hashtags/etc.  -> mirror the live post, consumed by the video panel
   -- ------------------------------------------------------------------------
   ('c0000000-0000-4000-8000-000000000007', 'Malupit na Bai Spotted On',
    'b0000000-0000-4000-8000-000000000004', 'a0000000-0000-4000-8000-000000000004',
    37, 1,
-   '/assets/audio/malupit-na-bai.mp3',
+   null,
    'https://www.tiktok.com/@spotibai_ph/video/7681226050852031751',
    true, 383500,
    '/assets/covers/tiktok-malupit-na-bai.svg'),
@@ -125,7 +125,7 @@ values
   ('c0000000-0000-4000-8000-000000000008', 'Coron Song (Bisaya)',
    'b0000000-0000-4000-8000-000000000004', 'a0000000-0000-4000-8000-000000000004',
    41, 2,
-   '/assets/audio/coron-song.mp3',
+   null,
    'https://www.tiktok.com/@spotibai_ph/video/7678258030735265042',
    true, 31400,
    '/assets/covers/tiktok-coron-song.svg')

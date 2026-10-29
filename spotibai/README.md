@@ -60,8 +60,10 @@ TikTok-sourced tracks.
 **Dual media engine**
 - standard tracks → `HTMLAudioElement`
 - direct video files → `<video>`
-- `is_tiktok_source` → **hybrid**: the real TikTok embed for visuals *plus* the
-  track's audio bed as a seekable clock (see `docs/ARCHITECTURE.md` §4)
+- `is_tiktok_source` → the official TikTok player is embedded in the in-app
+  panel for the original sound; no generated substitute audio is played. Select
+  **Load TikTok player** in the panel, then use its own controls. Playback stays
+  in SpotiBai; the app's seek bar cannot control a cross-origin TikTok player.
 
 **State** — one observable store (`js/store.js`): queue, index, is_playing, mode,
 volume, shuffle, repeat, video status, session, likes. Player preferences persist.
