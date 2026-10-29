@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content="0; url=./spotibai/index.html" />
+    <title>SpotiBai</title>
+    <script>
+      // Keep the application and its assets in /spotibai while allowing the
+      // repository root to have a conventional, directly-openable index.html.
+      window.location.replace(
+        new URL(`./spotibai/index.html${location.search}${location.hash}`, location.href),
+      );
+    </script>
+  </head>
+  <body>
+    <p>Opening SpotiBai… <a href="./spotibai/index.html">Continue</a></p>
+  </body>
+</html>

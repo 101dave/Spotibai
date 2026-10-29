@@ -11,11 +11,13 @@ No framework. No bundler. No build step.
 ## Run it
 
 ```bash
-# any static server works — ES modules need http(s), not file://
-cd spotibai
+# Run from the repository root; index.html forwards to the app in ./spotibai/
 python3 -m http.server 4173
 # → http://localhost:4173
 ```
+
+The repository root has a small `index.html` entry point; the app, scripts, and
+assets remain together inside `spotibai/`.
 
 It boots instantly in **demo mode**: a full catalog (4 artists, 4 albums, 8 tracks,
 2 playlists), real generated MP3s, generated cover art, working auth, likes,
