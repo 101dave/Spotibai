@@ -90,8 +90,22 @@ export function saveSupabaseCredentials(url, anonKey) {
 /** Build a public storage URL from a bucket + object path, when configured. */
 export function publicStorageUrl(bucket, path) {
   if (!path) return null;
-  if (/^(https?:|data:|\/|\.\/)/i.test(path)) return path; // already a URL/path
-  return `${CONFIG.SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+  const raw = String(path).trim();
+  if (/^(https?:|data:)/i.test(raw)) return raw;
+
+  // The SQL seed references the bundled assets as /assets/<bucket>/<file>.
+  // Resolve those known media paths to their public Supabase Storage objects.
+  const seededAsset = raw.replace(/^\.\//, '').replace(/^\//, '');
+  const match = seededAsset.match(/^assets\/(audio|covers|videos)\/(.+)$/i);
+  const objectPath = match && match[1].toLowerCase() === bucket
+    ? match[2]
+    : (/^(\/|\.\/)/.test(raw) ? null : raw);
+
+  if (!objectPath) return raw;
+  return `${CONFIG.SUPABASE_URL}/storage/v1/object/public/${bucket}/${objectPath
+    .split('/')
+    .map(encodeURIComponent)
+    .join('/')}`;
 }
 
 export const STORAGE_KEYS = {

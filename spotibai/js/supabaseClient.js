@@ -58,11 +58,10 @@ function mapTrack(row) {
     ...row,
     audio_url: publicStorageUrl(CONFIG.BUCKETS.audio, row.audio_url),
     video_url: row.video_url,
-    cover_url:
-      row.cover_url ||
-      row.album_cover_url ||
-      row.thumbnail_url ||
-      null,
+    cover_url: publicStorageUrl(
+      CONFIG.BUCKETS.covers,
+      row.cover_url || row.album_cover_url || row.thumbnail_url || null,
+    ),
     tiktok_video_id: row.tiktok_video_id || parseTikTokId(row.video_url),
     tiktok_hashtags: row.tiktok_hashtags || [],
     is_tiktok_source: Boolean(row.is_tiktok_source),
@@ -162,6 +161,7 @@ export class SupabaseRepository {
     if (error) fail('listAlbums', error);
     return (data || []).map((a) => ({
       ...a,
+      cover_url: publicStorageUrl(CONFIG.BUCKETS.covers, a.cover_url),
       artist_name: a.artists?.name ?? 'Unknown artist',
       artist_image_url: a.artists?.image_url ?? null,
     }));
@@ -184,7 +184,11 @@ export class SupabaseRepository {
     if (!albumRes.data) return null;
     if (tracksRes.error) fail('getAlbum tracks', tracksRes.error);
     return {
-      album: { ...albumRes.data, artist_name: albumRes.data.artists?.name },
+      album: {
+        ...albumRes.data,
+        cover_url: publicStorageUrl(CONFIG.BUCKETS.covers, albumRes.data.cover_url),
+        artist_name: albumRes.data.artists?.name,
+      },
       artist: albumRes.data.artists,
       tracks: (tracksRes.data || []).map(mapTrack),
     };
@@ -214,7 +218,10 @@ export class SupabaseRepository {
     const tracks = (tracksRes.data || []).map(mapTrack);
     return {
       artist: artistRes.data,
-      albums: albumsRes.data || [],
+      albums: (albumsRes.data || []).map((album) => ({
+        ...album,
+        cover_url: publicStorageUrl(CONFIG.BUCKETS.covers, album.cover_url),
+      })),
       topTracks: tracks.slice(0, 5),
       tracks,
     };
@@ -300,7 +307,11 @@ export class SupabaseRepository {
     ]);
     return {
       tracks: (tracksRes.data || []).map(mapTrack),
-      albums: (albumsRes.data || []).map((a) => ({ ...a, artist_name: a.artists?.name })),
+      albums: (albumsRes.data || []).map((a) => ({
+        ...a,
+        cover_url: publicStorageUrl(CONFIG.BUCKETS.covers, a.cover_url),
+        artist_name: a.artists?.name,
+      })),
       artists: artistsRes.data || [],
     };
   }

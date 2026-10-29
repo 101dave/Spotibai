@@ -28,9 +28,15 @@ Its schema and demo catalog are installed there. The browser uses only the publi
 anon key; RLS policies protect user data. You can override the project credentials
 through the in-app connection settings or with `window.__SPOTIBAI_CONFIG__`.
 
-To serve audio and artwork from Supabase, upload `assets/audio/*` to the `audio`
-bucket and `assets/covers/*` to `covers`. Until those assets are uploaded, media
-URLs stored in the demo catalog may not resolve from the hosted app.
+Upload the bundled tracks and cover art to Supabase Storage once with:
+
+```bash
+python3 spotibai/tools/upload_supabase_audio.py
+```
+
+The script uploads only the repository's demo MP3/SVG files. Supabase policies
+allow anonymous inserts for this fixed filename allowlist only; existing objects
+are never overwritten. Catalog asset paths are translated to public Storage URLs.
 
 If Supabase is unreachable or credentials are invalid, the app degrades back to
 demo mode with a warning badge.
