@@ -71,6 +71,8 @@ export class MediaEngine {
     this.fallbackEl = null;
     this._embedTimer = null;
     this._hostInteractHandler = null;
+    this._localFallbackTried = false;
+    this._wantsPlayback = false;
     /** Set once the listener opts into loading embeds for this session. */
     this._embedConsent = false;
 
@@ -78,6 +80,19 @@ export class MediaEngine {
   }
 
   /* ------------------------------------------------------------- internal */
+
+  _switchToLocalFallback() {
+    const fallback = this.track?.local_audio_fallback_url;
+    if (!fallback || this._localFallbackTried) return false;
+    const fallbackUrl = new URL(fallback, location.href).href;
+    if (this.audio.src === fallbackUrl) return false;
+
+    this._localFallbackTried = true;
+    this.audio.pause();
+    this.audio.src = fallback;
+    this.audio.load();
+    return true;
+  }
 
   _bindAudio() {
     const a = this.audio;
@@ -98,7 +113,15 @@ export class MediaEngine {
     a.addEventListener('waiting', () => this.hooks.onPlayState?.(false));
     a.addEventListener('error', () => {
       if (!this.track) return;
-      // A missing audio bed is expected for video-only TikTok rows.
+      // Storage may still be empty while bundled demo media is available locally.
+      if (this.mode !== 'hybrid' && this.mode !== 'video' && this._switchToLocalFallback()) {
+        if (this._wantsPlayback) {
+          a.play()
+            .then(() => this.hooks.onPlayState?.(true))
+            .catch(() => this.hooks.onError?.('This track’s audio could not be loaded.'));
+        }
+        return;
+      }
       if (this.mode === 'hybrid' || this.mode === 'video') return;
       this.hooks.onError?.('This track’s audio could not be loaded.');
     });
@@ -155,6 +178,8 @@ export class MediaEngine {
   async load(track, { autoplay = true, startAt = 0 } = {}) {
     if (!track) return;
     this.track = track;
+    this._localFallbackTried = false;
+    this._wantsPlayback = false;
     this.mode = MediaEngine.resolveMode(track);
     this.hooks.onMode?.(this.mode);
 
@@ -181,6 +206,7 @@ export class MediaEngine {
 
   async play() {
     if (!this.track) return;
+    this._wantsPlayback = true;
     try {
       if (this.mode === 'video' && this.videoEl) {
         // Video owns both picture and sound.
@@ -196,6 +222,15 @@ export class MediaEngine {
       }
       this.hooks.onPlayState?.(true);
     } catch (err) {
+      if (this.mode === 'audio' && this._switchToLocalFallback()) {
+        try {
+          await this.audio.play();
+          this.hooks.onPlayState?.(true);
+          return;
+        } catch {
+          // Fall through to the regular playback error below.
+        }
+      }
       if (err?.name === 'NotAllowedError') {
         // Autoplay policy: needs a user gesture. State stays paused.
         this.hooks.onPlayState?.(false);
@@ -207,6 +242,7 @@ export class MediaEngine {
   }
 
   pause() {
+    this._wantsPlayback = false;
     this.audio.pause();
     if (this.videoEl) this.videoEl.pause();
     this.hooks.onPlayState?.(false);
