@@ -17,6 +17,7 @@
  */
 
 import { CONFIG, hasSupabaseCredentials, publicStorageUrl } from './config.js';
+import { localAssetUrl } from './assets.js';
 import { localProvider } from './data/localProvider.js';
 import { parseTikTokId } from './utils.js';
 
@@ -51,17 +52,6 @@ export function loadSupabaseClient() {
    Helpers
    ============================================================================ */
 
-/** Keep seeded asset paths relative to the nested app folder, not the site root. */
-function localAssetUrl(bucket, path) {
-  if (!path) return null;
-  const raw = String(path).trim();
-  if (/^(https?:|data:)/i.test(raw)) return raw;
-  const match = raw.match(/(?:^|\/)assets\/(audio|covers|videos)\/(.+)$/i);
-  if (match && match[1].toLowerCase() === bucket) {
-    return `./assets/${bucket}/${match[2]}`;
-  }
-  return raw;
-}
 
 function mapArtist(artist) {
   return artist ? { ...artist, image_url: localAssetUrl('covers', artist.image_url) } : artist;
