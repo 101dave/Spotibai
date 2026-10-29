@@ -38,7 +38,8 @@ python3 spotibai/tools/upload_supabase_audio.py
 
 The script uploads only the repository's demo MP3/SVG files. Supabase policies
 allow anonymous inserts for this fixed filename allowlist only; existing objects
-are never overwritten. Catalog asset paths are translated to public Storage URLs.
+are never overwritten. Catalog asset paths use public Storage URLs; if a seeded MP3
+is missing from Storage, the player automatically falls back to its bundled local copy.
 
 If Supabase is unreachable or credentials are invalid, the app degrades back to
 demo mode with a warning badge.

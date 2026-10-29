@@ -57,6 +57,11 @@ function mapTrack(row) {
   return {
     ...row,
     audio_url: publicStorageUrl(CONFIG.BUCKETS.audio, row.audio_url),
+    // Bundled MP3 fallback keeps seeded tracks playable until Storage uploads finish.
+    local_audio_fallback_url: (() => {
+      const match = String(row.audio_url || '').match(/^\/?(?:\.\/)?assets\/audio\/([^/?#]+)$/);
+      return match ? `./assets/audio/${match[1]}` : null;
+    })(),
     video_url: row.video_url,
     cover_url: publicStorageUrl(
       CONFIG.BUCKETS.covers,
