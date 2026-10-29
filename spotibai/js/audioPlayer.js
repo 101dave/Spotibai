@@ -494,7 +494,8 @@ export class PlaybackController {
       track,
       isLoading: true,
       error: null,
-      videoOpen: track.is_tiktok_source ? true : pb.videoOpen,
+      // Keep playback in SpotiBai; opening the TikTok panel is an explicit user action.
+      videoOpen: track.is_tiktok_source ? false : pb.videoOpen,
       videoStatus: track.is_tiktok_source ? 'loading' : 'idle',
     });
 
